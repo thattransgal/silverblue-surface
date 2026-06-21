@@ -92,5 +92,9 @@ modules:
           - org.gnome.Weather
 
       - scope: user
+- type: systemd
+  system:
+    enabled:
+      - NetworkManager-wait-online.service
 
   - type: signing
