@@ -1,45 +1,65 @@
 ---
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
-# image will be published to ghcr.io/<user>/<name>
+
 name: silverblue-surface
-# description will be included in the image's metadata
-description: This is my personal OS image.
 
-# the base image to build on top of (FROM) and the version tag to use
-base-image: ghcr.io/ublue-os/silverblue-main
-image-version: 42 # latest is also supported if you want new updates ASAP
+description: A custom Fedora Silverblue based distro using the linux-surface kernel for use on Microsoft Surface devices
 
-# module configuration, executed in order
-# you can include multiple instances of the same module
+base-image: quay.io/fedora-ostree-desktops/silverblue
+image-version: "44"
+
 modules:
   - type: files
     files:
       - source: system
-        destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
+        destination: /
+
+  # Add Surface Linux repository
+  - type: script
+    snippets:
+      - |
+        curl -fsSL https://pkg.surfacelinux.com/fedora/linux-surface.repo \
+          -o /etc/yum.repos.d/linux-surface.repo
+
+        # Surface Linux has not yet published Fedora 44 packages
+        sed -i '/^baseurl=/ s/\$releasever/43/g' \
+          /etc/yum.repos.d/linux-surface.repo
+
+        rpm --import \
+          https://raw.githubusercontent.com/linux-surface/linux-surface/master/pkg/keys/surface.asc
 
   - type: dnf
-    repos:
-      copr:
-        - atim/starship
-    install:
-      packages:
-        - micro
-        - starship
     remove:
       packages:
-        # example: removing firefox (in favor of the flatpak)
-        # "firefox" is the main package, "firefox-langpacks" is a dependency
+        # Remove Firefox RPMs
         - firefox
-        - firefox-langpacks # also remove firefox dependency (not required for all packages, this is a special case)
+        - firefox-langpacks
+
+        # Remove Fedora kernel packages
+        - kernel
+        - kernel-core
+        - kernel-modules
+        - kernel-modules-core
+        - kernel-modules-extra
+
+    install:
+      packages:
+        # Surface Linux kernel
+        - kernel-surface
+
+        # Surface touchscreen / pen support
+        - iptsd
+
+        # Optional Secure Boot support
+        - surface-secureboot
 
   - type: default-flatpaks
     configurations:
-      - notify: true # Send notification after install/uninstall is finished (true/false)
-        scope: system
-        # If no repo information is specified, Flathub will be used by default
-        install: # system flatpaks we want all users to have and not remove
+      - scope: system
+        notify: true
+        install:
           - org.mozilla.firefox
-          - org.gnome.Loupe
-      - scope: user # Also add Flathub user repo, but no user packages
 
-  - type: signing # this sets up the proper policy & signing files for signed images to work fully
+      - scope: user
+
+  - type: signing
