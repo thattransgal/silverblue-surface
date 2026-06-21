@@ -103,11 +103,5 @@ modules:
 
       - scope: user
 
-  # Surface touchscreen/pen support
-  - type: systemd
-    system:
-      enabled:
-        - iptsd.service
-
   # Sign image
   - type: signing
