@@ -42,6 +42,7 @@ modules:
         - gnome-software
         - gnome-software-rpm-ostree
         - gnome-software-flatpak
+        - gnome-system-monitor
 
         # Remove Fedora kernel packages
         - kernel
@@ -100,6 +101,17 @@ modules:
           - org.gnome.Loupe
           - org.gnome.FileRoller
           - org.gnome.Weather
+          - org.gnome.Calendar
+          - org.gnome.Contacts
+          - org.gnome.clocks
+          - org.gnome.Calculator
+          - org.gnome.Maps
+          - org.gnome.Snapshot
+          - org.gnome.baobab
+          - org.gnome.Characters
+          - org.gnome.font-viewer
+          - org.gnome.Logs
+          - net.nokyan.Resources
 
       - scope: user
 
