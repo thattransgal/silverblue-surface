@@ -3,7 +3,7 @@
 
 name: silverblue-surface
 
-description: A custom Fedora Silverblue based distro using the linux-surface kernel for use on Microsoft Surface devices
+description: A custom Fedora Silverblue based distro using the linux-surface kernel for Microsoft Surface devices
 
 base-image: quay.io/fedora-ostree-desktops/silverblue
 image-version: "44"
@@ -14,14 +14,15 @@ modules:
       - source: system
         destination: /
 
-  # Add Surface Linux repository
+  # Add Linux Surface repository
   - type: script
     snippets:
       - |
         curl -fsSL https://pkg.surfacelinux.com/fedora/linux-surface.repo \
           -o /etc/yum.repos.d/linux-surface.repo
 
-        # Surface Linux has not yet published Fedora 44 packages
+        # Surface Linux has not published Fedora 44 packages yet.
+        # Use Fedora 43 packages instead.
         sed -i '/^baseurl=/ s/\$releasever/43/g' \
           /etc/yum.repos.d/linux-surface.repo
 
@@ -31,7 +32,7 @@ modules:
   - type: dnf
     remove:
       packages:
-        # Remove Firefox RPMs
+        # Replace Firefox RPM with Flatpak
         - firefox
         - firefox-langpacks
 
@@ -44,21 +45,49 @@ modules:
 
     install:
       packages:
-        # Surface Linux kernel
+        # Linux Surface kernel
         - kernel-surface
 
         # Surface touchscreen / pen support
         - iptsd
 
-        # Optional Secure Boot support
+        # Thermal management for Intel Surface devices
+        - thermald
+
+        # Secure Boot support (remove if not needed)
         - surface-secureboot
+
+        # Ensure Flatpak support exists
+        - flatpak
 
   - type: default-flatpaks
     configurations:
       - scope: system
         notify: true
         install:
+
+          # Browser
           - org.mozilla.firefox
+
+          # Preferred application store
+          - io.github.kolunmi.Bazaar
+
+          # Flatpak management tools
+          - io.github.flattool.Warehouse
+          - com.github.tchx84.Flatseal
+
+          # GNOME customization
+          - com.mattjakeman.ExtensionManager
+
+          # AppImage support
+          - it.mijorus.gearlever
+
+          # Core GNOME applications
+          - org.gnome.Evince
+          - org.gnome.TextEditor
+          - org.gnome.Loupe
+          - org.gnome.FileRoller
+          - org.gnome.Weather
 
       - scope: user
 
