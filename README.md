@@ -1,13 +1,12 @@
 # silverblue-surface &nbsp; [![bluebuild build badge](https://github.com/thattransgal/silverblue-surface/actions/workflows/build.yml/badge.svg)](https://github.com/thattransgal/silverblue-surface/actions/workflows/build.yml)
 
-See the [BlueBuild docs](https://blue-build.org/how-to/setup/) for quick setup instructions for setting up your own repository based on this template.
+This is a bluebuild workflow for building a fedora silverblue image with the surface-linux kernel preinstalled and used as the default kernel.
 
-After setup, it is recommended you update this README to describe your custom image.
+## Installing
 
-## Installation
+Install the base Fedora Silverblue iso, OR download one of the premade isos linked [here]()
 
-> [!WARNING]  
-> [This is an experimental feature](https://www.fedoraproject.org/wiki/Changes/OstreeNativeContainerStable), try at your own discretion.
+If you chose to use the fedora silverblue iso route then you will need to rebase, to rebase follow the steps below.
 
 To rebase an existing atomic Fedora installation to the latest build:
 
@@ -28,16 +27,5 @@ To rebase an existing atomic Fedora installation to the latest build:
   systemctl reboot
   ```
 
-The `latest` tag will automatically point to the latest build. That build will still always use the Fedora version specified in `recipe.yml`, so you won't get accidentally updated to the next major version.
 
-## ISO
-
-If build on Fedora Atomic, you can generate an offline ISO with the instructions available [here](https://blue-build.org/how-to/generate-iso/#_top). These ISOs cannot unfortunately be distributed on GitHub for free due to large sizes, so for public projects something else has to be used for hosting.
-
-## Verification
-
-These images are signed with [Sigstore](https://www.sigstore.dev/)'s [cosign](https://github.com/sigstore/cosign). You can verify the signature by downloading the `cosign.pub` file from this repo and running the following command:
-
-```bash
-cosign verify --key cosign.pub ghcr.io/thattransgal/silverblue-surface
-```
+  To install from a premade iso download the iso from the link above and follow the install prompts.
