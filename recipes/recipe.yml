@@ -76,7 +76,7 @@ modules:
   - type: default-flatpaks
     configurations:
       - scope: system
-        notify: true
+        notify: false
         install:
 
           # Browser
