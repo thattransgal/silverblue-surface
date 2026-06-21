@@ -9,6 +9,7 @@ base-image: ghcr.io/ublue-os/silverblue-main
 image-version: "44"
 
 modules:
+  # Copy custom system files
   - type: files
     files:
       - source: system
@@ -21,14 +22,15 @@ modules:
         curl -fsSL https://pkg.surfacelinux.com/fedora/linux-surface.repo \
           -o /etc/yum.repos.d/linux-surface.repo
 
-        # Surface Linux does not yet provide Fedora 44 packages
-        # Use Fedora 43 kernel packages instead
+        # Surface Linux has not published Fedora 44 packages yet.
+        # Use Fedora 43 kernel packages instead.
         sed -i '/^baseurl=/ s/\$releasever/43/g' \
           /etc/yum.repos.d/linux-surface.repo
 
         rpm --import \
           https://raw.githubusercontent.com/linux-surface/linux-surface/master/pkg/keys/surface.asc
 
+  # Replace Fedora kernel and selected applications
   - type: dnf
     remove:
       packages:
@@ -36,7 +38,7 @@ modules:
         - firefox
         - firefox-langpacks
 
-        # Remove GNOME Software - Bazaar will be the app store
+        # Replace GNOME Software with Bazaar
         - gnome-software
         - gnome-software-rpm-ostree
         - gnome-software-flatpak
@@ -55,17 +57,25 @@ modules:
 
         # Surface hardware support
         - iptsd
-
-        # Better Intel thermal management
         - thermald
 
         # Secure Boot support
         - surface-secureboot
 
+        # Flatpak support
+        - flatpak
+
+  # Wait for networking before services that need internet
+  - type: systemd
+    system:
+      enabled:
+        - NetworkManager-wait-online.service
+
+  # Default applications
   - type: default-flatpaks
     configurations:
       - scope: system
-        notify: false
+        notify: true
         install:
 
           # Browser
@@ -92,9 +102,12 @@ modules:
           - org.gnome.Weather
 
       - scope: user
-- type: systemd
-  system:
-    enabled:
-      - NetworkManager-wait-online.service
 
+  # Surface touchscreen/pen support
+  - type: systemd
+    system:
+      enabled:
+        - iptsd.service
+
+  # Sign image
   - type: signing
