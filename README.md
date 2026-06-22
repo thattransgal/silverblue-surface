@@ -1,31 +1,3 @@
 # silverblue-surface &nbsp; [![bluebuild build badge](https://github.com/thattransgal/silverblue-surface/actions/workflows/build.yml/badge.svg)](https://github.com/thattransgal/silverblue-surface/actions/workflows/build.yml)
 
-This is a bluebuild workflow for building a fedora silverblue image with the surface-linux kernel preinstalled and used as the default kernel.
-
-## Installing
-
-Install the base Fedora Silverblue iso, OR download one of the premade isos linked [here]()
-
-If you chose to use the fedora silverblue iso route then you will need to rebase, to rebase follow the steps below.
-
-To rebase an existing atomic Fedora installation to the latest build:
-
-- First rebase to the unsigned image, to get the proper signing keys and policies installed:
-  ```
-  rpm-ostree rebase ostree-unverified-registry:ghcr.io/thattransgal/silverblue-surface:latest
-  ```
-- Reboot to complete the rebase:
-  ```
-  systemctl reboot
-  ```
-- Then rebase to the signed image, like so:
-  ```
-  rpm-ostree rebase ostree-image-signed:docker://ghcr.io/thattransgal/silverblue-surface:latest
-  ```
-- Reboot again to complete the installation
-  ```
-  systemctl reboot
-  ```
-
-
-  To install from a premade iso download the iso from the link above and follow the install prompts.
+Welcome to the silverblue-surface repo. A repo for a custom Fedora atomic distro based on silverblue using the linux-surface kernel. This distro is only for use on Microsoft Surface series of devices as they need a custom kernel to get all function of the devices to work in linux. If you would like to install this on your Surface device follow the instructions below. I offer an ISO that is update weekly (but is hosted elsewhere due to github file size limits) and a rebase image so you can rebase from an existing Fedora silverblue install (kionite, or other Fedora atomic spins are not supported for rebasing).
