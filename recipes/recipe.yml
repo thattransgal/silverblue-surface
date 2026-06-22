@@ -14,7 +14,12 @@ modules:
     files:
       - source: system
         destination: /
-
+  # Add tailscale repo
+  - type: script
+    snippets:
+      - |
+        curl -fsSL https://pkgs.tailscale.com/stable/fedora/tailscale.repo -o //etc/yum.repos.d/tailscale.repo
+        rpm --import https://pkgs.tailscale.com/stable/fedora/repo.gpg
   # Add Linux Surface repository
   - type: script
     snippets:
@@ -65,12 +70,16 @@ modules:
 
         # Flatpak support
         - flatpak
+        
+        # tailscale
+        - tailscale
 
   # Wait for networking before services that need internet
   - type: systemd
     system:
       enabled:
         - NetworkManager-wait-online.service
+        - tailscaled.service
 
   # Default applications
   - type: default-flatpaks
