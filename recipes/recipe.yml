@@ -123,6 +123,7 @@ modules:
           - net.nokyan.Resources
 
       - scope: user
+        notify: false
 
   # Sign image
   - type: signing
